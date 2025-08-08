@@ -2,27 +2,74 @@
 
 Goal is to extract a list of Van Gogh paintings from the attached Google search results page.
 
-![Van Gogh paintings](https://github.com/serpapi/code-challenge/blob/master/files/van-gogh-paintings.png?raw=true "Van Gogh paintings")
+# GoogleKCParser
 
-## Instructions
+## Overview
+`GoogleKCParser` is a Ruby module designed to parse Google Knowledge Carousel (KC) HTML files. It extracts carousel items such as artworks, animal breeds, artist albums, movie cast lists etc by analyzing the HTML structure and embedded data.
 
-This is already fully supported on SerpApi. ([relevant test], [html file], [sample json], and [expected array].)
-Try to come up with your own solution and your own test.
-Extract the painting `name`, `extensions` array (date), and Google `link` in an array.
+## Project Structure
+```
+├── bin
+│   └── run_parser.rb # Script for running the parser from the command line
+├── files # Contains input HTML files and expected output JSON files
+├── lib
+│   └── google_kc_parser.rb # Parser module source code
+└── test
+    └── test_parser.rb # File for testing the parser using multiple carousel formats
+```
 
-Fork this repository and make a PR when ready.
+## Usage
 
-Programming language wise, Ruby (with RSpec tests) is strongly suggested but feel free to use whatever you feel like.
+### Running the parser from the command line
 
-Parse directly the HTML result page ([html file]) in this repository. No extra HTTP requests should be needed for anything.
+To parse an HTML file and output the extracted carousel data as JSON:
 
-[relevant test]: https://github.com/serpapi/test-knowledge-graph-desktop/blob/master/spec/knowledge_graph_claude_monet_paintings_spec.rb
-[sample json]: https://raw.githubusercontent.com/serpapi/code-challenge/master/files/van-gogh-paintings.json
-[html file]: https://raw.githubusercontent.com/serpapi/code-challenge/master/files/van-gogh-paintings.html
-[expected array]: https://raw.githubusercontent.com/serpapi/code-challenge/master/files/expected-array.json
+```bash
+ruby bin/run_parser.rb <html_file>
+```
+Example:
 
-Add also to your array the painting thumbnails present in the result page file (not the ones where extra requests are needed). 
+```bash
+ruby bin/run_parser.rb van-gogh-paintings.html
+```
+This will parse the file located in the files/ directory and output JSON results in a van-gogh-paintings-actual.json file and to stdout.
 
-Test against 2 other similar result pages to make sure it works against different layouts. (Pages that contain the same kind of carrousel. Don't necessarily have to be paintings.)
 
-The suggested time for this challenge is 4 hours. But, you can take your time and work more on it if you want.
+### Running the parser from IRB
+
+1. Start `irb` in the project root directory:
+
+   ```bash
+   irb
+   ```
+2. Require the parser module
+   ```bash
+   require_relative './lib/google_kc_parser'
+   ```
+3. Call the parser method with the HTML filename (located in files/):
+    ```ruby
+    results = GoogleKCParser.parse('van-gogh-paintings.html')
+    puts results
+    ```
+## Running Tests
+Tests are implemented using Ruby’s built-in Test::Unit framework.
+
+To run all tests:
+```bash
+ruby test/test_parser.rb
+```
+The following google queries are currently tested: 
+1. van gogh paintings
+2. dog breeds
+3. michael jackson albums
+4. stranger things cast
+
+The test suite verifies there's an exact match between the expected results and the actual results by verifying result-per-result and field-by-field. The query HTML files and the expected JSON results for the above queries are already present in the files/ directory. 
+
+Feel free to test more queries. You need to add the HTML page together with the expected output in json in the files/ directory. They need to follow the following format e.g. for 
+'dog breeds': dog- breeds.html and dog-breeds-expected.json. The expected json should be an array of hashes with keys name, link, image, extensions. Order of results **does matter**.
+## Notes
+This parser focuses on Google Knowledge Carousel results by targeting specific HTML data attributes and embedded JavaScript.
+Image data that is embedded as base64 or dynamically injected by scripts is properly decoded and extracted.
+The parser is designed to be extensible for different carousel formats.
+If you have any questions or need further assistance, feel free to reach out!
