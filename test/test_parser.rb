@@ -14,6 +14,8 @@ class GoogleKCParserTest < Test::Unit::TestCase
       html_file = query.gsub(' ','-') + '.html'
       actual_results = GoogleKCParser.parse(html_file)
 
+      assert actual_results.is_a?(Array), "Expected results to be an array but was #{actual_results.class}"
+
       expected_results_file = File.join(FILES_DIR, html_file.gsub('.html','-expected.json'))
       expected_results = JSON.parse(File.read(expected_results_file), symbolize_names:true)
 
