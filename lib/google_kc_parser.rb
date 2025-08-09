@@ -25,8 +25,12 @@ module GoogleKCParser
   #
   # The method also writes a JSON file with the actual parsed results to /files
   def self.parse(html_file)
+    # Check if file exists
+    html_file_path = File.join(FILES_DIR, html_file)
+    return "File #{html_file} not found in /files directory" unless File.exist?(html_file_path)
+
     # Read raw HTML 
-    html_raw = File.read(File.join(FILES_DIR, html_file))
+    html_raw = File.read(html_file_path)
     # Parse with Nokogiri
     html = Nokogiri::HTML(html_raw)
 
