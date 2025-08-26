@@ -22,7 +22,7 @@ class GoogleKCParserTest < Test::Unit::TestCase
       assert_equal expected_results.count, actual_results.count, "results count"
 
       expected_results.each_with_index do |expected_result, i|
-        assert actual_results[i].is_a?(Hash), "Expected result #{i} to be an array but was #{actual_results[i].class}"
+        assert actual_results[i].is_a?(Hash), "Expected result #{i} to be a hash but was #{actual_results[i].class}"
 
         [:name, :extensions, :link, :image].each do |field|
           assert_equal expected_result[field], actual_results[i][field], "#{field} for result #{i}"
